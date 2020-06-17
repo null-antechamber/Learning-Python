@@ -1,0 +1,143 @@
+## Sample Text.  This is a coded message that we need to decode.  The offset is 10
+
+
+encrypted_message = "xuo jxuhu! jxyi yi qd unqcfbu ev q squiqh syfxuh. muhu oek qrbu je tusetu yj? y xefu ie! iudt cu q cuiiqwu rqsa myjx jxu iqcu evviuj!"
+alphabet = ("abcdefghijklmnopqrstuvwxyz")
+
+
+def decoder(message, offset):
+    decrypted_message = ""
+    for c in message:
+        if c in alphabet:
+            decrypted_message += alphabet[(alphabet.index(c) + offset) % (len(alphabet))]
+        else:
+            decrypted_message += c
+
+    return decrypted_message
+
+
+# print(decoder(encrypted_message, 10))
+
+## Send coded Message
+
+sample_message = "This is a Test"
+
+
+def coder(message, offset):
+    coded_message = ""
+    for c in message:
+        if c in alphabet:
+            coded_message += alphabet[(alphabet.index(c) - offset) % (len(alphabet))]
+        else:
+            coded_message += c
+    return coded_message
+
+
+##print(coder(sample_message, 10))
+
+## Second round of Messages
+
+first_message = "jxu evviuj veh jxu iusedt cuiiqwu yi vekhjuud"
+
+# print(decoder(first_message, 10))
+
+second_message = "bqdradyuzs ygxfubxq omqemd oubtqde fa oapq kagd yqeemsqe ue qhqz yadq eqogdq!"
+
+# print(decoder(second_message, XXX(Removed to Prevent Spoiler)))
+
+## Resolving Ceasar Cipher With Unknown Cipher ##
+
+coded_message = "vhfinmxkl atox kxgwxkxw tee hy maxlx hew vbiaxkl tl hulhexmx. px'ee atox mh kxteer lmxi ni hnk ztfx by px ptgm mh dxxi hnk fxlltzxl ltyx."
+
+from langdetect import detect
+
+
+##Note: Sometimes the detect function is a little wonky, and may take 1-2 runs for it to hit the right result ##
+def ceasar_decrypt(message):
+    x = 0
+    decrypted_message = ""
+    en_lan = False
+    while x < 27:
+        for c in message:
+            if c in alphabet:
+                decrypted_message += alphabet[(alphabet.index(c) + x) % (len(alphabet))]
+            else:
+                decrypted_message += c
+        if detect(decrypted_message) == "en":
+            break
+        decrypted_message = ""
+        x += 1
+    return decrypted_message
+
+    # detect function is checking to see if result is english, if it is, then print, otherwise contiue
+
+
+##print(Ceaser_decrypt(coded_message))
+
+## Step 5 The Vigenere Cipher ##
+### Created Second Alphabet for use, hopefully to eliminate problems caused by case errors ##
+
+
+vigenere_alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+vigenere_cipher_message = "dfc aruw fsti gr vjtwhr wznj? vmph otis! cbx swv jipreneo uhllj kpi rahjib eg fjdkwkedhmp!"
+
+vigenere_cipher_keyword = "friends"
+
+
+def vigenere_decrypt(message, key):
+    decrypted_message = ""
+    key_index = 0
+    for c in message:
+        if c in vigenere_alphabet:
+            ## This takes the index of the current character and subtracts it to the current index of the key ##
+            decrypted_message += vigenere_alphabet[((vigenere_alphabet.index(c) - vigenere_alphabet.index(key[key_index])) % (len(vigenere_alphabet)))]
+
+            ## Rotate Key Forward ##
+            key_index += 1
+            if key_index == len(key):
+                key_index = 0
+
+        elif c in alphabet:
+            decrypted_message += alphabet[((alphabet.index(c) - alphabet.index(key[key_index])) % (len(alphabet)))]
+
+            ## Rotate forward in Key##
+            key_index += 1
+            if key_index == len(key):
+                key_index = 0
+
+        else:
+            decrypted_message += c
+
+    return decrypted_message
+
+##test of code##
+
+#print(vigenere_decrypt(vigenere_cipher_message, vigenere_cipher_keyword))
+
+def vigenere_encrypt(message, key):
+    encrypted_message = ""
+    key_index = 0
+    for c in message:
+        if c in vigenere_alphabet:
+            ## This Takes the index of the current character and adds it to the current index of the key ##
+            encrypted_message += vigenere_alphabet[((vigenere_alphabet.index(c) + vigenere_alphabet.index(key[key_index])) % (len(vigenere_alphabet)))]
+
+            ## Rotate Key Forward ##
+            key_index += 1
+            if key_index == len(key):
+                key_index = 0
+
+        elif c in alphabet:
+            encrypted_message += alphabet[((alphabet.index(c) + alphabet.index(key[key_index])) % (len(alphabet)))]
+
+            ## Rotate forward in Key##
+            key_index += 1
+            if key_index == len(key):
+                key_index = 0
+
+        else:
+            ## This adds spaces to the Code ##
+            encrypted_message += c
+
+    return encrypted_message
